@@ -6,12 +6,12 @@ import datetime
 import sys
 import time
 
-from config import *
-
 if os.geteuid() != 0:
 	raise Exception("Need to run as root!")
 
 os.chdir(sys.argv[1])
+sys.path.append(sys.argv[1])
+from config import *
 
 dscl = [ '/usr/bin/dscl', '-u', PHYREGGER, '-P', PHYREGGERPW, '/LDAPv3/127.0.0.1' ]
 
