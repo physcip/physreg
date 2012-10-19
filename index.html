@@ -1,0 +1,64 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title id="str_title">Registrierung</title>
+	<script type="text/javascript" src="jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="reg.js"></script>
+</head>
+<body onload="loaded()">
+	<div id="langselect">
+		<input type="button" onclick="localize('de')" value="Deutsch">
+		<input type="button" onclick="localize('en')" value="English">
+	</div>
+	<h1 id="str_heading">Willkommen</h1>
+	<div id="step1" style="display: none">
+		<h2 id="str_rus_login">RUS-Login</h2>
+		<p id="str_enter_password"></p>
+		<p id="str_rus_get"></p>
+		<table>
+			<tr>
+				<td id="str_rus_user">RUS-Benutzername</td>
+				<td><input type="text" id="rususer" /></td>
+			</tr>
+			<tr>
+				<td id="str_rus_password">RUS-Passwort</td>
+				<td><input type="password" id="ruspw" /></td>
+			</tr>
+		</table>
+		<p><input class="BTN_next" type="button" value="Weiter" onclick="step1()" /> <input class="BTN_cancel" type="button" value="Abbruch" onclick="clear_form()" /></p>
+	</div>
+	<div id="step2" style="display: none">
+		<h2 id="str_passwordheader">Passwort</h2>
+		<p id="str_choosepw"></p>
+		<input type="hidden" id="cipuser" /><input type="hidden" id="cippwtemp" />
+		<table>
+			<tr>
+				<td id="str_new_pw">Neues Passwort</td>
+				<td><input type="password" id="newpw" /></td>
+			</tr>
+			<tr>
+				<td id="str_new_pw_confirm">bestätigen</td>
+				<td><input type="password" id="newpw2" /></td>
+			</tr>
+		</table>
+		<p><input class="BTN_next" type="button" value="Weiter" onclick="step2()" /><input class="BTN_cancel" type="button" value="Abbruch" onclick="clear_form()" /></p>
+	</div>
+	<div id="step3" style="display: none">
+		<h2 id="str_emailheader">E-Mail-Adresse</h2>
+		<p id="str_enter_email"></p>
+		<table>
+			<tr>
+				<td id="str_email">E-Mail</td>
+				<td><input type="text" id="email" size="40" /></td>
+			</tr>
+		</table>
+		<p><input class="BTN_submit" type="button" value="Registrieren" onclick="step3()" /> <input class="BTN_cancel" type="button" value="Abbruch" onclick="clear_form()" /></p>
+	</div>
+	<div id="status" style="display: none">
+		<h2 id="statushead">Bitte warten...</h2>
+	</div>
+	<div id="success" style="display: none">
+		<h2 id="str_success">Fertig</h2>
+	</div>
+</body>
+</html>
