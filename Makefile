@@ -6,6 +6,7 @@ PWDFILE=/etc/phyreg-password
 
 install:
 	test -d tasks || mkdir tasks && chown _www:admin tasks && chmod 770 tasks
+	test -d log || mkdir log && chown _www:admin log && chmod 770 log
 	test -f /Library/LaunchDaemons/$(LAUNCHDAEMON) && launchctl unload /Library/LaunchDaemons/$(LAUNCHDAEMON) || true
 	
 	cp $(LAUNCHDAEMON) /Library/LaunchDaemons
