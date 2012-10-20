@@ -17,9 +17,10 @@ dscl = [ '/usr/bin/dscl', '-u', PHYREGGER, '-P', PHYREGGERPW, '/LDAPv3/127.0.0.1
 
 tasks = glob.glob('tasks/*')
 for task in tasks:
+	print '== Starting %s ==' % task
 	try:
-		f = open(task)
 		userid = int(os.path.basename(task))
+		f = open(task)
 		username = f.readline()[0:-1]
 		password = f.readline()[0:-1]
 		fullname = f.readline()[0:-1]
@@ -66,12 +67,18 @@ for task in tasks:
 		
 		# actually run the commands
 		for cmd in cmds:
-			print cmd
+			if cmd.count(password) == 0: # don't print password to log
+				print cmd
 			subprocess.check_call(cmd)
-		
-		# delete taskfile
-		subprocess.check_call([ '/usr/bin/srm', task])
+	
 	except Exception as e:
-		print task, e
+		print e
+		f = open('log/' + str(userid), 'a')
+		f.write('%s' % e)
+		f.close()
+	
+	finally:
 		# delete taskfile
 		subprocess.check_call([ '/usr/bin/srm', task])
+	
+	print '== Finished %s ==' % task

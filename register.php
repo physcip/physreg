@@ -126,7 +126,13 @@ function createuser($rususer, $ruspw, $email, $newpw, $lang)
 	while (time() - $starttime < $timeout) // timeout
 	{
 		if (!file_exists($taskfile))
-			return array('error' => FALSE, 'cipuser' => $userinfo['username'], 'cippwtemp' => $userinfo['password']);
+		{
+			$logfile = 'log/' . $userinfo['uid'];
+			if (file_exists($logfile))
+				return array('error' => TRUE, 'errormsg' => trim(file_get_contents($logfile)));
+			else
+				return array('error' => FALSE);
+		}
 		sleep(1);
 	}
 	return array('error' => TRUE, 'errormsg' => 'EXTERNAL_SCRIPT_TIMEOUT');
