@@ -1,6 +1,8 @@
 {
 	"title": "CIP Pool Physik Registrierung",
 	"heading": "Willkommen im CIP-Pool des Fachbereichs Physik!",
+	"infohead": "Informationen",
+	"introtext": "Jeder Student, der Physik als Haupt- oder Nebenfach studiert, kann diesen Computerpool nutzen. Dazu muss allerdings erst ein Account im Pool erstellt werden. Dies geschieht mit diesem Registrierungsformular. Du benötigst dafür einen Account beim RUS (NWZ-Pool).<br /><br />Falls du eine gesonderte Freischaltung brauchst (z.B. weil du Nebenfächler bist oder den Studiengang gewechselt hast) oder sonst noch Fragen hast, wende dich bitte an die Administratoren im Raum nebenan oder schreibe ihnen eine Mail unter support@physcip.uni-stuttgart.de. <br /><br />ACHTUNG: Bitte wähle für den Account ein Passwort, das du nicht schon irgendwo anders verwendest und das aus mindestens acht Klein- und Großbuchstaben, Ziffern und Satzzeichen (von jedem etwas!) besteht. Alle anderen Passwörter sind unsicher.",
 	"rus_login": "RUS-Login",
 	"enter_password": "Gib nun bitte deinen RUS-Benutzernamen und das RUS-Kennwort ein. Mit diesem Passwort wirst du dich an den Rechnern des CIP-Pools anmelden. Das RUS-Passwort wird dadurch nicht geändert.",
 	"rus_get": "Falls du noch keinen solchen Account hast, kannst du diesen bei der Benutzerberatung des RUS erhalten. 24 Stunden danach kannst du dann hier einen Account einrichten.",
@@ -13,7 +15,7 @@
 	"enter_email": "Damit wir uns bei Problemen mit deinem Account bei dir melden können, brauchen wir eine <b>gültige</b> e-mail-Adresse von dir.<br />Tipp: Das @ erhält man auf dem Mac, indem man ALT und L drückt.",
 	"email": "E-Mail-Adresse",
 	"emailheader": "E-Mail-Adresse eingeben",
-	"str_success": "Benutzer erfolgreich angelegt",
+	"success": "Benutzer erfolgreich angelegt",
 	"VALIDATING": "Überprüfe Passwort...",
 	"CREATING_USER": "Erstelle Benutzerkonto...",
 	"USERNAME_MISSING": "Benutzername fehlt",

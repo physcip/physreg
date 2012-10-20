@@ -1,6 +1,8 @@
 {
 	"title": "Physics Computer Lab Signup",
 	"heading": "Welcome to the Physics department's computer lab!",
+	"infohead": "Information",
+	"introtext": "Every physics student is eligible to use this computer lab. To do so, you first need to setup an account. This can be done using this form. As a prerequisite, you need an account with the university datacenter (RUS).<br /><br />If you have any questions, please contact the computer administrators in the room next door or email them at support@physcip.uni-stuttgart.de. <br /><br />IMPORTANT: Please choose a password you are not using anywhere else and make sure it consists of a minimum of 8 characters, consisting of lower and upper case letters, numbers and punctuation marks. Any other passwords are insecure and must not be used.",
 	"rus_login": "RUS Login",
 	"enter_password": "Please enter your RUS username and password. The RUS password will not be changed.",
 	"rus_get": "If you do not have such an account, you can obtain one at the RUS service desk. 24 hours later you will be able to use it to sign up here.",
@@ -13,7 +15,7 @@
 	"enter_email": "To be able to contact you in case of problems with your account, you need to provide us with a <b>valid</b> email address.<br />Hint: To get the @ character on a Mac, hold down the ALT key and hit the L key.",
 	"email": "Email address",
 	"emailheader": "Enter email address",
-	"str_success": "User account created successfully",
+	"success": "User account created successfully",
 	"VALIDATING": "Checking password...",
 	"CREATING_USER": "Creating user account...",
 	"USERNAME_MISSING": "User name missing",

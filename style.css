@@ -1,0 +1,31 @@
+body {
+	background-color: #EEF1F4;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #2E2F3F;
+}
+
+h1, h2 {
+	color:#336699;
+}
+
+#langselect {
+	float: left;
+	height: 100%;
+	width: 150px;
+	background-image: url(physciplogo.gif);
+	background-repeat: no-repeat;
+	padding-top: 128px;
+}
+
+input {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size:10pt;
+	color:#336699;
+	line-height: 14pt;
+	font-weight: bold;
+	background-color: #FFFFFF;
+}
+
+input.BTN_cancel {
+	background-color: #cccccc;
+}
