@@ -1,6 +1,7 @@
 <?php
 
 require_once 'config.inc.php';
+require_once 'ipcheck.inc.php';
 $timeout = 25;
 
 function err($msg)
@@ -10,6 +11,11 @@ function err($msg)
 	$data['errormsg'] = $msg;
 	echo json_encode($data);
 	exit;
+}
+
+if (!checkip($_SERVER['REMOTE_ADDR'], $allowed_v4, $allowed_v6))
+{
+	err('IP_NOT_ALLOWED');
 }
 
 function checkuser($rususer, $ruspw)
@@ -134,6 +140,10 @@ switch ($_GET['action'])
 	
 	case 'createuser':
 		$data = createuser($_POST['rususer'], $_POST['ruspw'], $_POST['email'], $_POST['password'], $_POST['lang']);
+	break;
+	
+	case 'ipcheck':
+		$data = array('error' => FALSE);
 	break;
 }
 

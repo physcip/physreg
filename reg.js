@@ -1,8 +1,13 @@
-function errormsg(msg)
+function translate(msg)
 {
 	if (strings[msg] !== undefined)
 		msg = strings[msg];
-	alert(msg);
+	return msg;
+}
+
+function errormsg(msg)
+{
+	alert(translate(msg));
 }
 
 function localize(lang)
@@ -28,8 +33,21 @@ function loaded()
 {
 	localize('de');
 	
-	$('#step1').show();
-	$('#rususer').focus();
+	$.get('register.php?action=ipcheck', { },
+		function(data)
+		{
+			if (data['error'])
+			{
+				$('#status').html(translate(data['errormsg']));
+				$('#status').show();
+			}
+			else
+			{
+				$('#step1').show();
+				$('#rususer').focus();
+			}
+		},
+		"json");
 }
 
 function clear_form()

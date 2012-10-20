@@ -30,6 +30,7 @@
 	"USER_NOT_ALLOWED": "You do not appear to be a physics student. If you think you are eligible for an account anyway, please contact the computer administration team next door.",
 	"USER_ALREADY_EXISTS": "You have already registered before. If you forgot your password, please contact the computer administration team next door.",
 	"EXTERNAL_SCRIPT_TIMEOUT": "An internal timeout occured. Please contact the computer administration team next door.",
+	"IP_NOT_ALLOWED": "This page can only be accessed from within the university network.",
 	"NOT_IMPLEMENTED": "The feature you requested does not exist.",
 	"BTN_next": "Next",
 	"BTN_cancel": "Cancel",

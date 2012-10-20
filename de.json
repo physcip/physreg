@@ -30,6 +30,7 @@
 	"USER_NOT_ALLOWED": "Du scheinst kein Physik-Student zu sein. Falls du dennoch berechtigt bist, einen Account zu beantragen, dann wende dich an die Administration nebenan.",
 	"USER_ALREADY_EXISTS": "Du hast dich bereits zuvor registriert. Falls du dein Passwort vergessen hast, wende dich an die Administration nebenan.",
 	"EXTERNAL_SCRIPT_TIMEOUT": "Es ist eine interne Zeitüberschreitung aufgetreten. Bitte wende dich an die Administration nebenan.",
+	"IP_NOT_ALLOWED": "Diese Seite kann nur aus dem Universitäts-Netzwerk genutzt werden.",
 	"NOT_IMPLEMENTED": "Die gewünschte Funktion existiert nicht.",
 	"BTN_next": "Weiter",
 	"BTN_cancel": "Abbrechen",
