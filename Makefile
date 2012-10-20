@@ -2,6 +2,7 @@ LAUNCHDAEMON=de.uni-stuttgart.physcip.reg.plist
 BINFILE=process_registration.py
 LOGFILE=/var/log/physreg.log
 PLISTBUDDY=/usr/libexec/PlistBuddy
+PWDFILE=/etc/phyreg-password
 
 install:
 	test -d tasks || mkdir tasks && chown _www:admin tasks && chmod 770 tasks
@@ -12,6 +13,10 @@ install:
 	$(PLISTBUDDY) -c "Set :QueueDirectories:0 $(shell pwd)/tasks" /Library/LaunchDaemons/$(LAUNCHDAEMON)
 	chown root:wheel /Library/LaunchDaemons/$(LAUNCHDAEMON)
 	chmod 644 /Library/LaunchDaemons/$(LAUNCHDAEMON)
+	
+	echo "-- Please enter the PHYREGGER password and hit return"
+	test -f $(PWDFILE) || read phyregpw && echo $$phyregpw >> $(PWDFILE)
+	chmod 600 $(PWDFILE)
 	
 	launchctl load /Library/LaunchDaemons/$(LAUNCHDAEMON)
 	
@@ -24,3 +29,4 @@ uninstall:
 	rm -f /Library/LaunchDaemons/$(LAUNCHDAEMON)
 	rm -f /usr/local/bin/$(BINFILE)
 	rm -f $(LOGFILE)
+	rm -f $(PWDFILE)
