@@ -7,7 +7,14 @@ function translate(msg)
 
 function errormsg(msg)
 {
-	alert(translate(msg));
+	//alert(translate(msg));
+	$('#errormsg').html(translate(msg));
+	$('#errorbox').show();
+}
+
+function closeerrorbox()
+{
+	$('#errorbox').hide();
 }
 
 function localize(lang)
@@ -52,6 +59,7 @@ function loaded()
 
 function clear_form()
 {
+	closeerrorbox();
 	$('#step1').hide();
 	$('#step2').hide();
 	$('#step3').hide();
@@ -72,6 +80,7 @@ function clear_form()
 
 function step1()
 {
+	closeerrorbox();
 	if ($('#rususer').val().trim() == '')
 	{
 		errormsg("USERNAME_MISSING");
@@ -111,6 +120,7 @@ function step1()
 
 function step2()
 {
+	closeerrorbox();
 	if ($('#newpw').val() == '')
 	{
 		errormsg("PW_MISSING");
@@ -136,6 +146,7 @@ function step2()
 
 function step3()
 {
+	closeerrorbox();
 	var emailReg = /^.+@[a-zA-Z0-9\.-]+\.+[a-zA-Z0-9]+$/;
 	if ($('#email').val().trim() == '' || !emailReg.test($('#email').val()))
 	{

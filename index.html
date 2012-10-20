@@ -7,6 +7,10 @@
 	<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body onload="loaded()">
+	<div id="errorbox" style="display: none">
+		<p id="errormsg"></p>
+		<input type="button" onclick="closeerrorbox()" value="OK" />
+	</div>
 	<div id="langselect">
 		<input type="button" onclick="localize('de')" value="Deutsch">
 		<input type="button" onclick="localize('en')" value="English">

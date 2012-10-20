@@ -29,3 +29,13 @@ input {
 input.BTN_cancel {
 	background-color: #cccccc;
 }
+
+#errorbox {
+	background-color: white;
+	border: 10px solid #9999ff;
+	position: absolute;
+	height: 100px;
+	width: 180px;
+	left: 300px;
+	top: 300px;
+}
