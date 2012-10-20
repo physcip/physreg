@@ -173,7 +173,7 @@ function step3()
 				$('#status').hide();
 				$('#success').show();
 				
-				clear_form();
+				setTimeout('clear_form()', 10000);
 			}
 		},
 		"json");
