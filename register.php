@@ -105,11 +105,9 @@ function createuser($rususer, $ruspw, $email, $newpw, $lang)
 	
 	ldap_close($conn);
 	
-	/*
 	// check whether user already exists
-	if (is_array(posix_getpwnam($user[0])) || is_array(posix_getpwuid($user[2])))
+	if (is_array(posix_getpwnam($userinfo['username'])) || is_array(posix_getpwuid($userinfo['uid'])))
 		err('USER_ALREADY_EXISTS');
-	*/
 	
 	// sanitize language
 	if (preg_match('/[^a-z]/', $lang) || strlen($lang) > 2)
