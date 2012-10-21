@@ -10,11 +10,16 @@ h1, h2 {
 
 #langselect {
 	float: left;
-	height: 100%;
-	width: 150px;
+	width: 128px;
 	background-image: url(physciplogo.gif);
 	background-repeat: no-repeat;
-	padding-top: 128px;
+	background-position: center top;
+	padding-top: 148px;
+	text-align: center;
+}
+
+#content {
+	margin-left: 138px;
 }
 
 input {
@@ -28,6 +33,10 @@ input {
 
 input.BTN_cancel {
 	background-color: #cccccc;
+}
+
+input.langbutton {
+	width: 100px;
 }
 
 #errorbox {

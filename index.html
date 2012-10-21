@@ -12,9 +12,10 @@
 		<input type="button" onclick="closeerrorbox()" value="OK" />
 	</div>
 	<div id="langselect">
-		<input type="button" onclick="localize('de')" value="Deutsch">
-		<input type="button" onclick="localize('en')" value="English">
+		<input class="langbutton" type="button" onclick="localize('de')" value="Deutsch">
+		<input class="langbutton" type="button" onclick="localize('en')" value="English">
 	</div>
+	<div id="content">
 	<h1 id="str_heading">Willkommen</h1>
 	<div id="step1" style="display: none">
 		<h2 id="str_infohead">Informationen</h2>
@@ -66,6 +67,7 @@
 	</div>
 	<div id="success" style="display: none">
 		<h2 id="str_success">Fertig</h2>
+	</div>
 	</div>
 </body>
 </html>
