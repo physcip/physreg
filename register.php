@@ -1,5 +1,7 @@
 <?php
 
+header('Content-type: application/json');
+
 require_once 'config.inc.php';
 require_once 'ipcheck.inc.php';
 $timeout = 25;
