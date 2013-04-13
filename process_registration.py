@@ -54,17 +54,20 @@ for task in tasks:
 		cmds.append(dscl + [ '-create', '/Users/' + username, 'UniqueID', str(userid)])
 		cmds.append(dscl + [ '-create', '/Users/' + username, 'PrimaryGroupID', str(primarygroupid)])
 		cmds.append(dscl + [ '-create', '/Users/' + username, 'NFSHomeDirectory', '/home/' + username])
-		cmds.append(dscl + [ '-create', '/Users/' + username, 'HomeDirectory', '<home_dir><url>afp://purple.physcip.uni-stuttgart.de/home/' + username + '</url><path></path></home_dir>'])
+		cmds.append(dscl + [ '-create', '/Users/' + username, 'HomeDirectory', '<home_dir><url>afp://home.physcip.uni-stuttgart.de/home/' + username + '</url><path></path></home_dir>'])
 		cmds.append(dscl + [ '-create', '/Users/' + username, 'HomeDirectoryQuota', str(homequota)])
 		cmds.append(dscl + [ '-create', '/Users/' + username, 'MailAttribute', '<?xml version="1.0" encoding="UTF-8"?><dict><key>kAPOPRequired</key><string>APOPNotRequired</string><key>kAltMailStoreLoc</key><string></string><key>kAttributeVersion</key><string>Apple Mail 1.0</string><key>kAutoForwardValue</key><string>%s</string><key>kIMAPLoginState</key><string>IMAPAllowed</string><key>kMailAccountLocation</key><string>purple.physcip.uni-stuttgart.de</string><key>kMailAccountState</key><string>Forward</string><key>kPOP3LoginState</key><string>POP3Allowed</string><key>kUserDiskQuota</key><string>0</string></dict>' % email])
 		cmds.append(dscl + [ '-create', '/Users/' + username, 'PrintServiceUserData', '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>lastmod</key><date>%s</date><key>quotaconfig</key><dict><key>byqueue</key><array/><key>default</key><dict><key>lastmod</key><date>%s</date><key>limit</key><integer>200</integer><key>period</key><integer>365</integer><key>start</key><date>%s</date><key>units</key><integer>1</integer></dict><key>mode</key><string>ALL</string></dict><key>version</key><integer>1</integer></dict></plist>' % (timestamp,timestamp,timestamp)])
 		cmds.append(dscl + [ '-passwd', '/Users/' + username, password ])
 		
 		# create homedir
-		cmds.append([ '/usr/sbin/createhomedir', '-s', '-u', username ])
-		
+		#cmds.append([ '/usr/sbin/createhomedir', '-c', '-u', username ])
+		#sshopts = [ '-q', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'StrictHostKeyChecking=no', '-o', 'PasswordAuthentication=no', '-o', 'PubkeyAuthentication=yes', '-i', '/etc/phyreg-id_rsa' ]
+		#cmds.append([ '/usr/bin/ssh' ] + sshopts + [ 'root@home.physcip.uni-stuttgart.de', '/usr/local/bin/inithomedir.sh', username, language ])
 		# set language
-		cmds.append(['sudo', '-u', username, './userinit.sh', language])
+		#cmds.append(['sudo', '-u', username, './userinit.sh', language])
+
+		cmds.append([ '/usr/local/bin/dbclient', '-y', '-i', '/etc/phyreg-id_rsa.db', 'root@home.physcip.uni-stuttgart.de', '/usr/local/bin/inithomedir.sh', username, language ])
 		
 		# actually run the commands
 		for cmd in cmds:

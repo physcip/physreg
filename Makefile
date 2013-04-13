@@ -15,7 +15,7 @@ install:
 	chown root:wheel /Library/LaunchDaemons/$(LAUNCHDAEMON)
 	chmod 644 /Library/LaunchDaemons/$(LAUNCHDAEMON)
 	
-	echo "-- Please enter the PHYREGGER password and hit return"
+	test -f $(PWDFILE) || echo "-- Please enter the PHYREGGER password and hit return"
 	test -f $(PWDFILE) || read phyregpw && echo $$phyregpw >> $(PWDFILE)
 	chmod 600 $(PWDFILE)
 	
@@ -24,6 +24,12 @@ install:
 	cp $(BINFILE) /usr/local/bin
 	chown root:wheel /usr/local/bin/$(BINFILE)
 	chmod 644 /usr/local/bin/$(BINFILE)
+	
+	test -f /etc/phyreg-id_rsa || ssh-keygen -N '' -f /etc/phyreg-id_rsa
+	test -f /etc/phyreg-id_rsa.db || dropbearconvert openssh dropbear /etc/phyreg-id_rsa /etc/phyreg-id_rsa.db
+	@echo '-- Please add the following line to /var/root/.ssh/authorized_keys on home.physcip.uni-stuttgart.de'
+	@echo command=\"/usr/local/bin/inithomedir.sh\" $(shell cat /etc/phyreg-id_rsa.pub)
+	@echo '-- and copy the file ./inithomedir.sh to /usr/local/bin/inithomedir.sh'
 
 uninstall:
 	test -f /Library/LaunchDaemons/$(LAUNCHDAEMON) && launchctl unload /Library/LaunchDaemons/$(LAUNCHDAEMON) || true
