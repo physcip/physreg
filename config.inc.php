@@ -4,7 +4,11 @@ $LDAPSEARCHBASE="dc=stud,dc=uni-stuttgart,dc=de";
 $LDAPSPECIALUSER="cn=ldapqueryPhys,ou=ServiceAccounts,ou=IuK-IS,dc=stud,dc=uni-stuttgart,dc=de";
 $LDAPSPECIALUSERPW="";
 
-$ALLOWEDGROUPS=array("CN=phy,OU=StudGroups,DC=stud,DC=uni-stuttgart,DC=de");
+$ALLOWEDGROUPS=array(
+	"CN=Stg128,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
+	"CN=Stg918,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
+	"CN=Stg978,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
+);
 $ALLOWEDUSERS=file("/etc/phyreg-allow", FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 
 $allowed_v4 = array('129.69.0.0/16', '141.58.0.0/16', '192.108.35.0/24', '192.108.36.0/22', '192.108.40.0/22', '192.108.44.0/24');
