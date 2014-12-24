@@ -27,6 +27,7 @@ function checkuser($rususer, $ruspw)
 	// get user DN
 	$conn = ldap_connect('ldaps://' . $LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
 	$bind = @ldap_bind($conn, $LDAPSPECIALUSER, $LDAPSPECIALUSERPW) or err("LDAPSPECIAL_AUTH_FAILED");
 	$result = ldap_search($conn, $LDAPSEARCHBASE, '(&(samaccountname=' . $rususer . '))');
 	$info = ldap_get_entries($conn, $result);
@@ -40,6 +41,7 @@ function checkuser($rususer, $ruspw)
 	// check password
 	$conn = ldap_connect('ldaps://' . $LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
 	$bind = ldap_bind($conn, $USERDN, $ruspw) or err("RUS_PW_INVALID");
 	ldap_close($conn);
 	
@@ -53,6 +55,7 @@ function createuser($rususer, $ruspw, $email, $newpw, $lang)
 	// get user DN
 	$conn = ldap_connect('ldaps://' . $LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
 	$bind = @ldap_bind($conn, $LDAPSPECIALUSER, $LDAPSPECIALUSERPW) or err("LDAPSPECIAL_AUTH_FAILED");
 	$result = ldap_search($conn, $LDAPSEARCHBASE, '(&(samaccountname=' . $rususer . '))');
 	$info = ldap_get_entries($conn, $result);
@@ -69,6 +72,7 @@ function createuser($rususer, $ruspw, $email, $newpw, $lang)
 	// check password
 	$conn = ldap_connect('ldaps://' . $LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
 	$bind = ldap_bind($conn, $USERDN, $ruspw) or err("RUS_PW_INVALID");
 	$result = ldap_search($conn, $USERDN, '(&(objectClass=*))');
 	$info = ldap_get_entries($conn, $result);
@@ -129,7 +133,7 @@ function createuser($rususer, $ruspw, $email, $newpw, $lang)
 		{
 			$logfile = 'log/' . $userinfo['uid'];
 			if (file_exists($logfile))
-				return array('error' => TRUE, 'errormsg' => trim(file_get_contents($logfile)));
+				return array('error' => TRUE, 'errormsg' => "Error: see $logfile");
 			else
 				return array('error' => FALSE);
 		}

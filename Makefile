@@ -26,7 +26,7 @@ install:
 	chmod 644 /usr/local/bin/$(BINFILE)
 	
 	test -f /etc/phyreg-id_rsa || ssh-keygen -N '' -f /etc/phyreg-id_rsa
-	test -f /etc/phyreg-id_rsa.db || dropbearconvert openssh dropbear /etc/phyreg-id_rsa /etc/phyreg-id_rsa.db
+	#test -f /etc/phyreg-id_rsa.db || dropbearconvert openssh dropbear /etc/phyreg-id_rsa /etc/phyreg-id_rsa.db
 	@echo '-- Please add the following line to /var/root/.ssh/authorized_keys on home.physcip.uni-stuttgart.de'
 	@echo command=\"/usr/local/bin/inithomedir.sh\" $(shell cat /etc/phyreg-id_rsa.pub)
 	@echo '-- and copy the file ./inithomedir.sh to /usr/local/bin/inithomedir.sh'

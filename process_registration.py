@@ -13,7 +13,7 @@ os.chdir(sys.argv[1])
 sys.path.append(sys.argv[1])
 from config import *
 
-dscl = [ '/usr/bin/dscl', '-u', PHYREGGER, '-P', PHYREGGERPW, '/LDAPv3/127.0.0.1' ]
+dscl = [ '/usr/bin/dscl', '-u', PHYREGGER, '-P', PHYREGGERPW, DSNODE ]
 
 tasks = glob.glob('tasks/*')
 for task in tasks:
@@ -62,12 +62,12 @@ for task in tasks:
 		
 		# create homedir
 		#cmds.append([ '/usr/sbin/createhomedir', '-c', '-u', username ])
-		#sshopts = [ '-q', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'StrictHostKeyChecking=no', '-o', 'PasswordAuthentication=no', '-o', 'PubkeyAuthentication=yes', '-i', '/etc/phyreg-id_rsa' ]
-		#cmds.append([ '/usr/bin/ssh' ] + sshopts + [ 'root@home.physcip.uni-stuttgart.de', '/usr/local/bin/inithomedir.sh', username, language ])
+		sshopts = [ '-q', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'StrictHostKeyChecking=no', '-o', 'PasswordAuthentication=no', '-o', 'PubkeyAuthentication=yes', '-i', '/etc/phyreg-id_rsa' ]
+		cmds.append([ '/usr/bin/ssh' ] + sshopts + [ 'root@home.physcip.uni-stuttgart.de', '/usr/local/bin/inithomedir.sh', username, language ])
 		# set language
 		#cmds.append(['sudo', '-u', username, './userinit.sh', language])
 
-		cmds.append([ '/usr/local/bin/dbclient', '-y', '-i', '/etc/phyreg-id_rsa.db', 'root@home.physcip.uni-stuttgart.de', '/usr/local/bin/inithomedir.sh', username, language ])
+		#cmds.append([ '/usr/local/bin/dbclient', '-y', '-i', '/etc/phyreg-id_rsa.db', 'root@home.physcip.uni-stuttgart.de', '/usr/local/bin/inithomedir.sh', username, language ])
 		
 		# actually run the commands
 		for cmd in cmds:

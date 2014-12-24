@@ -66,6 +66,7 @@ if [ ! -d "$username/Library/Preferences" ]; then
 	ditto /System/Library/User\ Template/Non_localized $username 2>&1 | tee -a /var/log/physreg-home.log
 	ditto /System/Library/User\ Template/$lang.lproj $username 2>&1 | tee -a /var/log/physreg-home.log
 	chown -R $username:$groupname $username 2>&1 | tee -a /var/log/physreg-home.log
+	rm -rf /Volumes/home/$username/Downloads/About\ Downloads.lpdf 2>&1 | tee -a /var/log/physreg-home.log
 else
 	echo "Homedir already initialized" | tee -a /var/log/physreg-home.log
 fi
