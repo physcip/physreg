@@ -1,13 +1,17 @@
 <?php
 require_once "config.inc.php";
+$ALLOWEDGROUPS = array_merge($ALLOWEDGROUPS, $KEEPGROUPS);
 $LOCALSEARCHBASE = 'dc=purple,dc=physcip,dc=uni-stuttgart,dc=DE';
+$LOCALLDAPSERVER = 'purple.physcip.uni-stuttgart.de';
 
 $conn = ldap_connect('ldaps://' . $LDAPSERVER);
 ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
 $bind = ldap_bind($conn, $LDAPSPECIALUSER, $LDAPSPECIALUSERPW) or err("LDAPSPECIAL_AUTH_FAILED");
 
-$conn2 = ldap_connect('ldap://localhost');
+$conn2 = ldap_connect('ldaps://' . $LOCALLDAPSERVER);
 ldap_set_option($conn2, LDAP_OPT_PROTOCOL_VERSION, 3);
+ldap_set_option($conn2, LDAP_OPT_REFERRALS, FALSE);
 
 $result = ldap_search($conn2, $LOCALSEARCHBASE, 'objectClass=inetOrgPerson');
 $info = ldap_get_entries($conn2, $result);
@@ -19,8 +23,16 @@ foreach ($info as $user)
 	$USERDN = $user['dn'];
 	
 	// skip disabled users
-	if (strpos(shell_exec('pwpolicy -u ' . $uid . ' -getpolicy 2>/dev/null'), 'isDisabled=0') === FALSE)
-		continue;
+	if (version_compare(php_uname("r"), "14.0.0", ">=")) // OS X 10.10 and higher
+	{
+		if (strpos(shell_exec('pwpolicy -u ' . $uid . ' -authentication-allowed 2>/dev/null'), 'Policy allows user') === FALSE)
+			continue;
+	}
+	else
+	{
+		if (strpos(shell_exec('pwpolicy -u ' . $uid . ' -getpolicy 2>/dev/null'), 'isDisabled=0') === FALSE)
+			continue;
+	}
 	
 	if ($uidnumber < 10000)
 		continue;

@@ -5,9 +5,8 @@ $LDAPSPECIALUSER="cn=ldapqueryPhys,ou=ServiceAccounts,ou=IuK-IS,dc=stud,dc=uni-s
 $LDAPSPECIALUSERPW="";
 
 $ALLOWEDGROUPS=array(
-	"CN=Stg128,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
-	"CN=Stg918,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
-	"CN=Stg978,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
+	"CN=Stg1590-08-128,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
+	"CN=Stg1590-08-918,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
 );
 $allowfile = "/etc/phyreg-allow";
 if (file_exists($allowfile))
