@@ -8,6 +8,11 @@ $ALLOWEDGROUPS=array(
 	"CN=Stg1590-08-128,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
 	"CN=Stg1590-08-918,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
 );
+$KEEPGROUPS=array(
+	// Doktoranden sind bei der Fakultät geführt. Mathe-Doktoranden sollen sich aber nicht registrieren können.
+	// Deswegen müssen neue Physik-Doktoranden manuell freigeschaltet werden, werden aber nicht automatisch deaktiviert.
+	"CN=Stg1590-08-P82,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
+);
 $allowfile = "/etc/phyreg-allow";
 if (file_exists($allowfile))
 	$ALLOWEDUSERS=file($allowfile, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
