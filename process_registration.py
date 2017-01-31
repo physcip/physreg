@@ -83,6 +83,9 @@ for task in tasks:
 	
 	finally:
 		# delete taskfile
-		subprocess.check_call([ '/usr/bin/srm', task])
+		if os.path.exists('/usr/bin/srm'):
+			subprocess.check_call([ '/usr/bin/srm', task])
+		else
+			subprocess.check_call([ '/bin/rm', task])
 	
 	print '== Finished %s ==' % task
