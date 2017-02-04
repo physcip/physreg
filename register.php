@@ -3,46 +3,38 @@
 header('Content-type: application/json');
 
 require_once 'config.inc.php';
+require_once 'util.inc.php';
 require_once 'ipcheck.inc.php';
 $timeout = 25;
 
-function err($msg)
-{
-	$data = array();
-	$data['error'] = TRUE;
-	$data['errormsg'] = $msg;
-	echo json_encode($data);
-	exit;
-}
-
 if (!checkip($_SERVER['REMOTE_ADDR'], $allowed_v4, $allowed_v6))
 {
-	err('IP_NOT_ALLOWED');
+	physreg_err('IP_NOT_ALLOWED');
 }
 
 function checkuser($rususer, $ruspw)
 {
-	global $LDAPSERVER, $LDAPSEARCHBASE, $LDAPSPECIALUSER, $LDAPSPECIALUSERPW, $ALLOWEDUSERS, $ALLOWEDGROUPS, $timeout;
+	global $TIK_LDAPSERVER, $TIK_LDAPSEARCHBASE, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW, $ALLOWEDUSERS, $ALLOWEDGROUPS, $timeout;
 	
 	// get user DN
-	$conn = ldap_connect('ldaps://' . $LDAPSERVER);
+	$conn = ldap_connect('ldaps://' . $TIK_LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
-	$bind = @ldap_bind($conn, $LDAPSPECIALUSER, $LDAPSPECIALUSERPW) or err("LDAPSPECIAL_AUTH_FAILED");
-	$result = ldap_search($conn, $LDAPSEARCHBASE, '(&(samaccountname=' . $rususer . '))');
+	$bind = @ldap_bind($conn, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW) or physreg_err("LDAPSPECIAL_AUTH_FAILED");
+	$result = ldap_search($conn, $TIK_LDAPSEARCHBASE, '(&(samaccountname=' . $rususer . '))');
 	$info = ldap_get_entries($conn, $result);
 	ldap_close($conn);
 	
 	if ($info['count'] != 1)
-		err("RUS_USER_INVALID");
+		physreg_err("RUS_USER_INVALID");
 	
 	$USERDN = $info[0]['dn'];
 	
 	// check password
-	$conn = ldap_connect('ldaps://' . $LDAPSERVER);
+	$conn = ldap_connect('ldaps://' . $TIK_LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
-	$bind = ldap_bind($conn, $USERDN, $ruspw) or err("RUS_PW_INVALID");
+	$bind = ldap_bind($conn, $USERDN, $ruspw) or physreg_err("RUS_PW_INVALID");
 	ldap_close($conn);
 	
 	return array('error' => FALSE);
@@ -50,19 +42,19 @@ function checkuser($rususer, $ruspw)
 
 function createuser($rususer, $ruspw, $email, $newpw, $lang)
 {
-	global $LDAPSERVER, $LDAPSEARCHBASE, $LDAPSPECIALUSER, $LDAPSPECIALUSERPW, $ALLOWEDUSERS, $ALLOWEDGROUPS, $timeout;
+	global $TIK_LDAPSERVER, $TIK_LDAPSEARCHBASE, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW, $ALLOWEDUSERS, $ALLOWEDGROUPS, $timeout;
 	
 	// get user DN
-	$conn = ldap_connect('ldaps://' . $LDAPSERVER);
+	$conn = ldap_connect('ldaps://' . $TIK_LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
-	$bind = @ldap_bind($conn, $LDAPSPECIALUSER, $LDAPSPECIALUSERPW) or err("LDAPSPECIAL_AUTH_FAILED");
-	$result = ldap_search($conn, $LDAPSEARCHBASE, '(&(samaccountname=' . $rususer . '))');
+	$bind = @ldap_bind($conn, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW) or physreg_err("LDAPSPECIAL_AUTH_FAILED");
+	$result = ldap_search($conn, $TIK_LDAPSEARCHBASE, '(&(samaccountname=' . $rususer . '))');
 	$info = ldap_get_entries($conn, $result);
 	ldap_close($conn);
 	
 	if ($info['count'] != 1)
-		err("RUS_USER_INVALID");
+		physreg_err("RUS_USER_INVALID");
 	
 	$USERDN = $info[0]['dn'];
 	
@@ -70,10 +62,10 @@ function createuser($rususer, $ruspw, $email, $newpw, $lang)
 	preg_match('/^([a-z]+)([0-9]+)$/', strtolower($rususer), $user);
 	
 	// check password
-	$conn = ldap_connect('ldaps://' . $LDAPSERVER);
+	$conn = ldap_connect('ldaps://' . $TIK_LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
-	$bind = ldap_bind($conn, $USERDN, $ruspw) or err("RUS_PW_INVALID");
+	$bind = ldap_bind($conn, $USERDN, $ruspw) or physreg_err("RUS_PW_INVALID");
 	$result = ldap_search($conn, $USERDN, '(&(objectClass=*))');
 	$info = ldap_get_entries($conn, $result);
 	
@@ -107,13 +99,13 @@ function createuser($rususer, $ruspw, $email, $newpw, $lang)
 	}
 	
 	if (!$allowed)
-		err('USER_NOT_ALLOWED');
+		physreg_err('USER_NOT_ALLOWED');
 	
 	ldap_close($conn);
 	
 	// check whether user already exists
 	if (is_array(posix_getpwnam($userinfo['username'])) || is_array(posix_getpwuid($userinfo['uid'])))
-		err('USER_ALREADY_EXISTS');
+		physreg_err('USER_ALREADY_EXISTS');
 	
 	// sanitize language
 	if (preg_match('/[^a-z]/', $lang) || strlen($lang) > 2)

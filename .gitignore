@@ -1,4 +1,2 @@
-tasks/*
 log/*
-config.*
-*.pyc
+config_secret.inc.php

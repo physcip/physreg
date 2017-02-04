@@ -1,13 +1,17 @@
 <?php
+# TODO: This script has not been updated for the new Samba4 AD DC infrastructure
+
 require_once "config.inc.php";
+require_once "util.inc.php";
+
 $ALLOWEDGROUPS = array_merge($ALLOWEDGROUPS, $KEEPGROUPS);
 $LOCALSEARCHBASE = 'dc=purple,dc=physcip,dc=uni-stuttgart,dc=DE';
 $LOCALLDAPSERVER = 'purple.physcip.uni-stuttgart.de';
 
-$conn = ldap_connect('ldaps://' . $LDAPSERVER);
+$conn = ldap_connect('ldaps://' . $TIK_LDAPSERVER);
 ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
-$bind = ldap_bind($conn, $LDAPSPECIALUSER, $LDAPSPECIALUSERPW) or err("LDAPSPECIAL_AUTH_FAILED");
+$bind = ldap_bind($conn, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW) or physcip_err("LDAPSPECIAL_AUTH_FAILED");
 
 $conn2 = ldap_connect('ldaps://' . $LOCALLDAPSERVER);
 ldap_set_option($conn2, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -41,7 +45,7 @@ foreach ($info as $user)
 	else
 		$fullname = $user['sn'][0] . ' ' . $user['givenname'][0];
 	
-	$result = ldap_search($conn, $LDAPSEARCHBASE, '(&(samaccountname=' . $uid . '))');
+	$result = ldap_search($conn, $TIK_LDAPSEARCHBASE, '(&(samaccountname=' . $uid . '))');
 	$info = ldap_get_entries($conn, $result);
 	
 	if ($info['count'] != 1)

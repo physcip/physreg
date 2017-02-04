@@ -1,9 +1,39 @@
 <?php
-$LDAPSERVER="studsv12.stud.uni-stuttgart.de";
-$LDAPSEARCHBASE="dc=stud,dc=uni-stuttgart,dc=de";
-$LDAPSPECIALUSER="cn=ldapqueryPhys,ou=ServiceAccounts,ou=IuK-IS,dc=stud,dc=uni-stuttgart,dc=de";
-$LDAPSPECIALUSERPW="";
+# Secret Credentials: config_secret.inc.php must contain:
+# --> $TIK_LDAPSPECIALUSERPW (password for TIK AD server)
+# --> $PHYSCIP_PHYREGGER_PW (password for physcip AD server)
+require_once 'config_secret.inc.php';
 
+# TIK LDAP Credentials
+# This is the server users authenticate to with their TIK account and the server that contains the list of allowed student groups
+$TIK_LDAPSERVER="studsv12.stud.uni-stuttgart.de";
+$TIK_LDAPSEARCHBASE="dc=stud,dc=uni-stuttgart,dc=de";
+$TIK_LDAPSPECIALUSER="cn=ldapqueryPhys,ou=ServiceAccounts,ou=IuK-IS,dc=stud,dc=uni-stuttgart,dc=de";
+
+# Physcip LDAP server Credentials
+$PHYSCIP_SERVER = "ldaps://dc01.physcip.uni-stuttgart.de ldaps://dc02.physcip.uni-stuttgart.de";	# Primary (and secondary) domain controller, requires LDAPS
+$PHYSCIP_PHYREGGER_DN = "phyregger@physcip.uni-stuttgart.de";						# DN or userPrincipalName for phyregger Account
+
+# Home directory creation via SSH
+# Physreg creates home directory by logging in to the home directory server via SSH and executing
+# the given command with parameters $username and $language.
+$PHYSCIP_HOME_SSH = "root@home.physcip.uni-stuttgart.de";						# Username / server to log in to via SSH for creating home directories
+$PHYSCIP_HOME_COMMAND = "/usr/local/bin/inithomedir.sh";						# Command that will be executed on homedir server
+$PHYSCIP_HOME_SSH_ID = "/tmp/phyreg-id_rsa";								# Key to use for authentication, can be restricted to PHYSCIP_HOME_COMMAND
+
+# Default attributes for new users. The $PHYSCIP_PRIMARYGROUP, $PHYSCIP_PRIMARYGROUPID and
+# $PHYSCIP_GIDNUMBER configuration options describe the group new users are added to (e.g. "cipuser").
+# They MUST be attributes of the SAME group.
+$PHYSCIP_NISDOMAIN = "physcip";										# msSFU30NisDomain
+$PHYSCIP_UPN_REALM = "physcip.uni-stuttgart.de";							# Realm for userPrincipalName
+$PHYSCIP_USER_CONTAINER = "cn=Users,dc=physcip,dc=uni-stuttgart,dc=de";					# Where to put new users
+$PHYSCIP_PRIMARYGROUP = "cn=cipuser,cn=Users,dc=physcip,dc=uni-stuttgart,dc=de";			# DN of primary group
+$PHYSCIP_PRIMARYGROUPID = 1104;										# Last block of SID (= RID), for Windows primary group
+$PHYSCIP_GIDNUMBER = 10000;										# gidNumber of primary group
+
+# Groups that are allowed to register new accounts ($ALLOWEDGROUPS) and groups whose member's accounts
+# won't be deleted ($KEEPGROUPS), but whose members can't register new accounts. $ALLOWEDUSERS is a list
+# of users that can create new accounts despite not being a member of $ALLOWEDGROUPS.
 $ALLOWEDGROUPS=array(
 	"CN=Stg1590-08-128,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
 	"CN=Stg1590-08-918,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
