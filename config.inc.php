@@ -6,7 +6,7 @@ require_once 'config_secret.inc.php';
 
 # TIK LDAP Credentials
 # This is the server users authenticate to with their TIK account and the server that contains the list of allowed student groups
-$TIK_LDAPSERVER="studsv12.stud.uni-stuttgart.de";
+$TIK_LDAPSERVER="ldaps://studsv12.stud.uni-stuttgart.de";
 $TIK_LDAPSEARCHBASE="dc=stud,dc=uni-stuttgart,dc=de";
 $TIK_LDAPSPECIALUSER="cn=ldapqueryPhys,ou=ServiceAccounts,ou=IuK-IS,dc=stud,dc=uni-stuttgart,dc=de";
 
@@ -26,8 +26,8 @@ $PHYSCIP_HOME_SSH_ID = "/tmp/phyreg-id_rsa";								# Key to use for authenticat
 # They MUST be attributes of the SAME group.
 $PHYSCIP_NISDOMAIN = "physcip";										# msSFU30NisDomain
 $PHYSCIP_UPN_REALM = "physcip.uni-stuttgart.de";							# Realm for userPrincipalName
-$PHYSCIP_USER_CONTAINER = "cn=Users,dc=physcip,dc=uni-stuttgart,dc=de";					# Where to put new users
-$PHYSCIP_PRIMARYGROUP = "cn=cipuser,cn=Users,dc=physcip,dc=uni-stuttgart,dc=de";			# DN of primary group
+$PHYSCIP_USER_CONTAINER = "ou=Students,ou=People,dc=physcip,dc=uni-stuttgart,dc=de";			# Where to put new users
+$PHYSCIP_PRIMARYGROUP = "cn=cipuser,ou=Groups,dc=physcip,dc=uni-stuttgart,dc=de";			# DN of primary group
 $PHYSCIP_PRIMARYGROUPID = 1104;										# Last block of SID (= RID), for Windows primary group
 $PHYSCIP_GIDNUMBER = 10000;										# gidNumber of primary group
 
