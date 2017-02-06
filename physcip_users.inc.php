@@ -3,7 +3,7 @@
 require_once 'config.inc.php';
 require_once 'util.inc.php';
 
-# TODO: Add PHYSCIP_BIND_FAILED, PHYSCIP_ADD_FAILED and PHYSCIP_PRIMARY_FAILED, PHYSCIP_SEARCH_FAILED, PHYSCIP_INVALID_INPUT errors to web client
+# TODO: Add PHYSCIP_BIND_FAILED, PHYSCIP_ADD_FAILED, PHYSCIP_PRIMARY_FAILED, PHYSCIP_SEARCH_FAILED, PHYSCIP_INVALID_INPUT, PHYSCIP_CREATEHOME_FAILED errors to web client
 
 # AD wants the password in a unicode format
 # This seems to be the commonly accepted hack to encode the password
@@ -27,10 +27,10 @@ function physcip_userexists($username)
 	$conn = ldap_connect($PHYSCIP_SERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
-	if (!ldap_bind($conn, $PHYSCIP_PHYREGGER_DN, $PHYSCIP_PHYREGGER_PW))
+	if (!@ldap_bind($conn, $PHYSCIP_PHYREGGER_DN, $PHYSCIP_PHYREGGER_PW))
 		physreg_err('PHYSCIP_BIND_FAILED');
 
-	$res = ldap_search($conn, $PHYSCIP_USER_CONTAINER, '(uid=' . $username . ')');
+	$res = ldap_search($conn, $PHYSCIP_USER_CONTAINER, '(sAMAccountName=' . $username . ')');
 	if (!$res)
 		physreg_err('PHYSCIP_SEARCH_FAILED');
 
@@ -104,7 +104,7 @@ function physcip_createuser($username, $uidnumber, $password, $firstname, $lastn
 	$conn = ldap_connect($PHYSCIP_SERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
-	if (!ldap_bind($conn, $PHYSCIP_PHYREGGER_DN, $PHYSCIP_PHYREGGER_PW))
+	if (!@ldap_bind($conn, $PHYSCIP_PHYREGGER_DN, $PHYSCIP_PHYREGGER_PW))
 		physreg_err('PHYSCIP_BIND_FAILED');
 
 	# Step 2: Add user
@@ -132,7 +132,9 @@ function physcip_createuser($username, $uidnumber, $password, $firstname, $lastn
 	$sshopts = '-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o PubkeyAuthentication=yes';
 	$sshlogin = 'ssh ' . $sshopts . ' -i ' . $PHYSCIP_HOME_SSH_ID . ' ' . $PHYSCIP_HOME_SSH;
 	$sshcommand = $sshlogin . ' ' . $PHYSCIP_HOME_COMMAND . ' ' . $username . ' ' . $lang;
-	exec($sshcommand);
+	exec($sshcommand, $output, $exitcode);
+	if ($exitcode != 0)
+		physreg_err('PHYSCIP_CREATEHOME_FAILED');
 
 	ldap_close($conn);
 }

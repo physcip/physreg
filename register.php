@@ -47,7 +47,7 @@ function checkuser($rususer, $ruspw)
 	$conn = ldap_connect($TIK_LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, false);
-	$bind = ldap_bind($conn, $userdn, $ruspw) or physreg_err('RUS_PW_INVALID');
+	$bind = @ldap_bind($conn, $userdn, $ruspw) or physreg_err('RUS_PW_INVALID');
 	ldap_close($conn);
 
 	return array('error' => false);
@@ -67,7 +67,7 @@ function createuser($rususer, $ruspw, $email, $physcippw, $lang)
 	$conn = ldap_connect($TIK_LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, false);
-	$bind = ldap_bind($conn, $userdn, $ruspw) or physreg_err('RUS_PW_INVALID');
+	$bind = @ldap_bind($conn, $userdn, $ruspw) or physreg_err('RUS_PW_INVALID');
 	$result = ldap_search($conn, $userdn, '(&(objectClass=*))');
 	$info = ldap_get_entries($conn, $result);
 
