@@ -19,7 +19,7 @@ $PHYSCIP_PHYREGGER_DN = "phyregger@physcip.uni-stuttgart.de";						# DN or userP
 # the given command with parameters $username and $language.
 $PHYSCIP_HOME_SSH = "root@home.physcip.uni-stuttgart.de";						# Username / server to log in to via SSH for creating home directories
 $PHYSCIP_HOME_COMMAND = "/usr/local/bin/inithomedir.sh";						# Command that will be executed on homedir server
-$PHYSCIP_HOME_SSH_ID = "/tmp/phyreg-id_rsa";								# Key to use for authentication, can be restricted to PHYSCIP_HOME_COMMAND
+$PHYSCIP_HOME_SSH_ID = "/etc/phyreg-id_rsa";								# Key to use for authentication, can be restricted to PHYSCIP_HOME_COMMAND
 
 # Default attributes for new users. The $PHYSCIP_PRIMARYGROUP, $PHYSCIP_PRIMARYGROUPID and
 # $PHYSCIP_GIDNUMBER configuration options describe the group new users are added to (e.g. "cipuser").

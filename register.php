@@ -1,5 +1,7 @@
 <?php
 
+# TODO: Remove EXTERNAL_SCRIPT_TIMEOUT error
+
 header('Content-type: application/json');
 
 require_once 'physcip_users.inc.php';
@@ -12,33 +14,40 @@ if (!checkip($_SERVER['REMOTE_ADDR'], $allowed_v4, $allowed_v6))
 	physreg_err('IP_NOT_ALLOWED');
 }
 
+# Helper function: Get DN of user in TIK / RUS Active Directory server
+function get_rus_dn($rususer)
+{
+	global $TIK_LDAPSERVER, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW, $TIK_LDAPSEARCHBASE;
+
+	$conn = ldap_connect($TIK_LDAPSERVER);
+	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($conn, LDAP_OPT_REFERRALS, false);
+	$bind = @ldap_bind($conn, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW) or physreg_err('LDAPSPECIAL_AUTH_FAILED');
+	$result = ldap_search($conn, $TIK_LDAPSEARCHBASE, '(&(samaccountname=' . $rususer . '))');
+	$info = ldap_get_entries($conn, $result);
+	ldap_close($conn);
+
+	if ($info['count'] != 1)
+		physreg_err('RUS_USER_INVALID');
+
+	return $info[0]['dn'];
+}
+
 function checkuser($rususer, $ruspw)
 {
 	global $TIK_LDAPSERVER, $TIK_LDAPSEARCHBASE, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW, $ALLOWEDUSERS, $ALLOWEDGROUPS;
 
 	# Sanitize username input - only alphanumeric strings allowed and make sure all parameters have been specified
 	if (!ctype_alnum($rususer) || $ruspw == null)
-		physreg_err("PHYSCIP_INVALID_INPUT");
+		physreg_err('PHYSCIP_INVALID_INPUT');
 
-	# get user DN
-	$conn = ldap_connect($TIK_LDAPSERVER);
-	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
-	ldap_set_option($conn, LDAP_OPT_REFERRALS, false);
-	$bind = @ldap_bind($conn, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW) or physreg_err("LDAPSPECIAL_AUTH_FAILED");
-	$result = ldap_search($conn, $TIK_LDAPSEARCHBASE, '(&(samaccountname=' . $rususer . '))');
-	$info = ldap_get_entries($conn, $result);
-	ldap_close($conn);
-
-	if ($info['count'] != 1)
-		physreg_err("RUS_USER_INVALID");
-
-	$userdn = $info[0]['dn'];
+	$userdn = get_rus_dn($rususer);
 
 	# check password
 	$conn = ldap_connect($TIK_LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, false);
-	$bind = ldap_bind($conn, $userdn, $ruspw) or physreg_err("RUS_PW_INVALID");
+	$bind = ldap_bind($conn, $userdn, $ruspw) or physreg_err('RUS_PW_INVALID');
 	ldap_close($conn);
 
 	return array('error' => false);
@@ -50,32 +59,20 @@ function createuser($rususer, $ruspw, $email, $physcippw, $lang)
 
 	# Sanitize username input - only alphanumeric strings allowed
 	if (!ctype_alnum($rususer) || $ruspw == null || $email == null || $physcippw == null || $lang == null)
-		physreg_err("PHYSCIP_INVALID_INPUT");
+		physreg_err('PHYSCIP_INVALID_INPUT');
 
-	# get user DN
-	$conn = ldap_connect($TIK_LDAPSERVER);
-	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
-	ldap_set_option($conn, LDAP_OPT_REFERRALS, false);
-	$bind = @ldap_bind($conn, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW) or physreg_err("LDAPSPECIAL_AUTH_FAILED");
-	$result = ldap_search($conn, $TIK_LDAPSEARCHBASE, '(&(samaccountname=' . $rususer . '))');
-	$info = ldap_get_entries($conn, $result);
-	ldap_close($conn);
-
-	if ($info['count'] != 1)
-		physreg_err("RUS_USER_INVALID");
-
-	$userdn = $info[0]['dn'];
+	$userdn = get_rus_dn($rususer);
 
 	# check password and get user attributes
 	$conn = ldap_connect($TIK_LDAPSERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, false);
-	$bind = ldap_bind($conn, $userdn, $ruspw) or physreg_err("RUS_PW_INVALID");
+	$bind = ldap_bind($conn, $userdn, $ruspw) or physreg_err('RUS_PW_INVALID');
 	$result = ldap_search($conn, $userdn, '(&(objectClass=*))');
 	$info = ldap_get_entries($conn, $result);
 
 	# Parse user info and TIK account username
-	# Extract UID from username: "St123456" --> $usersplit = ["st123456", "st", "123456"]
+	# Extract UID from username: 'St123456' --> $usersplit = ['st123456', 'st', '123456']
 	preg_match('/^([a-z]+)([0-9]+)$/', strtolower($rususer), $usersplit);
 	$username = $usersplit[0];
 	$uidnumber = $usersplit[2];
@@ -119,30 +116,9 @@ function createuser($rususer, $ruspw, $email, $physcippw, $lang)
 		$lang = 'de';
 
 	# Actually create new user
-	echo("Language: " . $lang . "\r\n");
 	physcip_createuser($username, $uidnumber, $physcippw, $firstname, $lastname, $email, $lang);
 
-	// write to task file
-	// Warning: Never change the order of these fields. If you add fields, add them to the end.
-	#$task = sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n", $userinfo['username'], $userinfo['password'], $userinfo['fullname'], $userinfo['firstname'], $userinfo['lastname'], $email, $lang);
-	#$taskfile = 'tasks/' . $userinfo['uid'];
-	#file_put_contents($taskfile, $task);
-
-	// wait for task file to be deleted, indicating the process is complete
-	#$starttime = time();
-	#while (time() - $starttime < $timeout) // timeout
-	#{
-	#	if (!file_exists($taskfile))
-	#	{
-	#		$logfile = 'log/' . $userinfo['uid'];
-	#		if (file_exists($logfile))
-	#			return array('error' => true, 'errormsg' => "Error: see $logfile");
-	#		else
-	#			return array('error' => false);
-	#	}
-	#	sleep(1);
-	#}
-	#return array('error' => true, 'errormsg' => 'EXTERNAL_SCRIPT_TIMEOUT');
+	return array('error' => false);
 }
 
 switch ($_GET['action'])

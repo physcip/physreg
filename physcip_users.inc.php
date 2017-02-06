@@ -12,7 +12,7 @@ function encode_password($password)
 	$password = "\"" . $password . "\"";
 	$len = strlen($password);
 
-	$unicodepwd = "";
+	$unicodepwd = '';
 	for($i=0; $i < $len; $i++)
 		$unicodepwd .= "{$password{$i}}\000";
 	return $unicodepwd;
@@ -28,11 +28,11 @@ function physcip_userexists($username)
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
 	if (!ldap_bind($conn, $PHYSCIP_PHYREGGER_DN, $PHYSCIP_PHYREGGER_PW))
-		physreg_err("PHYSCIP_BIND_FAILED");
+		physreg_err('PHYSCIP_BIND_FAILED');
 
-	$res = ldap_search($conn, $PHYSCIP_USER_CONTAINER, "(uid=" . $username . ")");
+	$res = ldap_search($conn, $PHYSCIP_USER_CONTAINER, '(uid=' . $username . ')');
 	if (!$res)
-		physreg_err("PHYSCIP_SEARCH_FAILED");
+		physreg_err('PHYSCIP_SEARCH_FAILED');
 
 	$exists = false;
 	if (ldap_count_entries($conn, $res) == 1)
@@ -44,13 +44,13 @@ function physcip_userexists($username)
 
 # Add user to Active Directory (Samba4) via LDAP and create home directory via ssh
 # Parameters:
-# $username: "st123456" / "phy12345" / ...
+# $username: 'st123456' / 'phy12345' / ...
 # $password: String
 # $uidnumber: 123456 / 12345 / ... = usually number in username
-# $firstname: "Max"
-# $lastname: "Mustermann"
-# $email: "maxmustermann@example.org"
-# $lang: "de" / "en" / ...
+# $firstname: 'Max'
+# $lastname: 'Mustermann'
+# $email: 'maxmustermann@example.org'
+# $lang: 'de' / 'en' / ...
 function physcip_createuser($username, $uidnumber, $password, $firstname, $lastname, $email, $lang)
 {
 	global $PHYSCIP_NISDOMAIN, $PHYSCIP_GIDNUMBER, $PHYSCIP_PRIMARYGROUP, $PHYSCIP_PRIMARYGROUPID;
@@ -60,44 +60,44 @@ function physcip_createuser($username, $uidnumber, $password, $firstname, $lastn
 	# Sanitize inputs: Make sure $username and $lang only contain alphanumeric characters.
 	# This is CRUCIAL for ensuring users can't inject code into the command that creates the home directories via SSH.
 	if (!ctype_alnum($username) || !ctype_alnum($lang))
-		physreg_err("PHYSCIP_INVALID_INPUT");
+		physreg_err('PHYSCIP_INVALID_INPUT');
 
-	$fullname = $firstname . " " . $lastname . " (" . $uidnumber . ")";
-	$newuser_dn = "cn=" . $username . "," . $PHYSCIP_USER_CONTAINER;
+	$fullname = $firstname . ' ' . $lastname . ' (' . $uidnumber . ')';
+	$newuser_dn = 'cn=' . $username . ',' . $PHYSCIP_USER_CONTAINER;
 
 	# Attributes get written to AD via LDAP
 	# msDS-SupportedEncryptionTypes 31 enables stronger authentication hashes
 	# userAccountControl 512 enables account
 	$info = [
-		"objectclass" => [
-			"top", "user", "organizationalPerson", "person", "posixAccount"
+		'objectclass' => [
+			'top', 'user', 'organizationalPerson', 'person', 'posixAccount'
 		],
-		"cn" => $username,
-		"displayName" => $fullname,
-		"gidNumber" => $PHYSCIP_GIDNUMBER,
-		"givenName" => $firstname,
-		"loginShell" => "/bin/bash",
-		"mail" => $email,
-		"msSFU30Name" => $username,
-		"msSFU30NisDomain" => $PHYSCIP_NISDOMAIN,
-		"sAMAccountName" => $username,
-		"sn" => $lastname,
-		"uid" => $username,
-		"uidNumber" => $uidnumber,
-		"unixHomeDirectory" => "/home/" . $username,
-		"apple-user-homeurl" => "<home_dir><url>afp://home.physcip.uni-stuttgart.de/home/" . $username . "</url><path></path></home_dir>",
-		"unicodePwd" => encode_password($password),
-		"userPrincipalName" => $username . "@" . $PHYSCIP_UPN_REALM,
-		"msDS-SupportedEncryptionTypes" => "31",
-		"userAccountControl" => "512"
+		'cn' => $username,
+		'displayName' => $fullname,
+		'gidNumber' => $PHYSCIP_GIDNUMBER,
+		'givenName' => $firstname,
+		'loginShell' => '/bin/bash',
+		'mail' => $email,
+		'msSFU30Name' => $username,
+		'msSFU30NisDomain' => $PHYSCIP_NISDOMAIN,
+		'sAMAccountName' => $username,
+		'sn' => $lastname,
+		'uid' => $username,
+		'uidNumber' => $uidnumber,
+		'unixHomeDirectory' => '/home/' . $username,
+		'apple-user-homeurl' => '<home_dir><url>afp://home.physcip.uni-stuttgart.de/home/' . $username . '</url><path></path></home_dir>',
+		'unicodePwd' => encode_password($password),
+		'userPrincipalName' => $username . '@' . $PHYSCIP_UPN_REALM,
+		'msDS-SupportedEncryptionTypes' => '31',
+		'userAccountControl' => '512'
 	];
 
 	$info_groupmembership = [
-		"member" => $newuser_dn
+		'member' => $newuser_dn
 	];
 
 	$info_makeprimary = [
-		"primaryGroupID" => $PHYSCIP_PRIMARYGROUPID
+		'primaryGroupID' => $PHYSCIP_PRIMARYGROUPID
 	];
 
 	# Step 1: Connect to Samba4 AD DC Server
@@ -105,30 +105,30 @@ function physcip_createuser($username, $uidnumber, $password, $firstname, $lastn
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
 	if (!ldap_bind($conn, $PHYSCIP_PHYREGGER_DN, $PHYSCIP_PHYREGGER_PW))
-		physreg_err("PHYSCIP_BIND_FAILED");
+		physreg_err('PHYSCIP_BIND_FAILED');
 
 	# Step 2: Add user
 	if (!ldap_add($conn, $newuser_dn, $info))
-		physreg_err("PHYSCIP_ADD_FAILED");
+		physreg_err('PHYSCIP_ADD_FAILED');
 
 	# Step 3: Make user member of cipuser group
 	if (!ldap_modify($conn, $PHYSCIP_PRIMARYGROUP, $info_groupmembership))
-		physreg_err("PHYSCIP_PRIMARY_FAILED");
+		physreg_err('PHYSCIP_PRIMARY_FAILED');
 
 	# Step 4: Change user's primary group membership to cipuser
 	if (!ldap_modify($conn, $newuser_dn, $info_makeprimary))
-		physreg_err("PHYSCIP_PRIMARY_FAILED");
+		physreg_err('PHYSCIP_PRIMARY_FAILED');
 
-	# Step 6: Remove user from "Domain User" group (user gets automatically added)
-	$domainusers_dn = "cn=Domain Users,cn=Users,dc=physcip,dc=uni-stuttgart,dc=de";
-	$domainusers_delmember["member"] = $newuser_dn;
+	# Step 6: Remove user from 'Domain User' group (user gets automatically added)
+	$domainusers_dn = 'cn=Domain Users,cn=Users,dc=physcip,dc=uni-stuttgart,dc=de';
+	$domainusers_delmember['member'] = $newuser_dn;
 	if (!ldap_mod_del($conn, $domainusers_dn, $domainusers_delmember))
-		physreg_err("PHYSCIP_DELMEMBER_FAILED");
+		physreg_err('PHYSCIP_DELMEMBER_FAILED');
 
-	# Step 6: Create home directory via SSH
-	$sshopts = "-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o StrictHostKeyChecking=no -o StrictHostKeyChecking=no";
-	$sshlogin = "ssh " . $sshopts . " -i " . $PHYSCIP_HOME_SSH_ID . " " . $PHYSCIP_HOME_SSH;
-	$sshcommand = $sshlogin . " " . $PHYSCIP_HOME_COMMAND . " " . $username . " " . $lang;
+	# Step 7: Create home directory via SSH
+	$sshopts = '-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o PubkeyAuthentication=yes';
+	$sshlogin = 'ssh ' . $sshopts . ' -i ' . $PHYSCIP_HOME_SSH_ID . ' ' . $PHYSCIP_HOME_SSH;
+	$sshcommand = $sshlogin . ' ' . $PHYSCIP_HOME_COMMAND . ' ' . $username . ' ' . $lang;
 	exec($sshcommand);
 
 	ldap_close($conn);
