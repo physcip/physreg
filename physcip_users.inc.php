@@ -112,6 +112,9 @@ function physcip_createuser($username, $uidnumber, $password, $firstname, $lastn
 		physreg_err('PHYSCIP_ADD_FAILED');
 
 	# Step 3: Make user member of cipuser group
+	# Unfortunately, setting the user's primaryGroupID directly will be denied by Samba 4,
+	# the user has to be a member of the cipuser group beforehand. This is why we add the
+	# "member" attribute entry here, even though that gets deleted by setting primaryGroupID in Step 4.
 	if (!ldap_modify($conn, $PHYSCIP_PRIMARYGROUP, $info_groupmembership))
 		physreg_err('PHYSCIP_PRIMARY_FAILED');
 
