@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Usage:
+# inithomedir.sh <username> <language> <uid> <gid>
+# With <language> = "nl", "en", "fr", "de", "it", "jp" or "es"
+# <uid> and <gid> must be the uidNumber and gidNumber of the newly created user,
+# used to set home directory ownership (since <username> might not already exist on LDAP server)
+#
+# This script is only supposed to be called by physreg over SSH
+
 if [ "$SSH_ORIGINAL_COMMAND" = "" ]; then
 	SSH_ORIGINAL_COMMAND=$*
 fi
@@ -14,6 +22,10 @@ for arg in $SSH_ORIGINAL_COMMAND; do
 		username=$arg
 	elif [ "$i" = "2" ]; then
 		lang=$arg
+	elif [ "$i" = "3" ]; then
+		uid=$arg
+	elif [ "$i" = "4" ]; then
+		gid=$arg
 	fi
 done
 
@@ -53,19 +65,15 @@ fi
 
 echo "Creating homedir for $username with $lang" | tee -a /var/log/physreg-home.log
 
-#createhomedir -c -u $username
-
-groupname=$(id -g -n $username)
-
 cd /Volumes/home
 mkdir $username 2>&1 | tee -a /var/log/physreg-home.log
-chown $username:$groupname $username 2>&1 | tee -a /var/log/physreg-home.log
+chown $uid:$gid $username 2>&1 | tee -a /var/log/physreg-home.log
 
 if [ ! -d "$username/Library/Preferences" ]; then
 	echo "Initializing home directory with user template for $lang" | tee -a /var/log/physreg-home.log
 	ditto /System/Library/User\ Template/Non_localized $username 2>&1 | tee -a /var/log/physreg-home.log
 	ditto /System/Library/User\ Template/$lang.lproj $username 2>&1 | tee -a /var/log/physreg-home.log
-	chown -R $username:$groupname $username 2>&1 | tee -a /var/log/physreg-home.log
+	chown -R $uid:$gid $username 2>&1 | tee -a /var/log/physreg-home.log
 	rm -rf /Volumes/home/$username/Downloads/About\ Downloads.lpdf 2>&1 | tee -a /var/log/physreg-home.log
 else
 	echo "Homedir already initialized" | tee -a /var/log/physreg-home.log

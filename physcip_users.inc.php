@@ -131,7 +131,7 @@ function physcip_createuser($username, $uidnumber, $password, $firstname, $lastn
 	# Step 7: Create home directory via SSH
 	$sshopts = '-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o PubkeyAuthentication=yes';
 	$sshlogin = 'ssh ' . $sshopts . ' -i ' . $PHYSCIP_HOME_SSH_ID . ' ' . $PHYSCIP_HOME_SSH;
-	$sshcommand = $sshlogin . ' ' . $PHYSCIP_HOME_COMMAND . ' ' . $username . ' ' . $lang;
+	$sshcommand = $sshlogin . ' ' . $PHYSCIP_HOME_COMMAND . ' ' . $username . ' ' . $lang . ' ' . $uidnumber . ' ' . $PHYSCIP_GIDNUMBER;
 	exec($sshcommand, $output, $exitcode);
 	if ($exitcode != 0)
 		physreg_err('PHYSCIP_CREATEHOME_FAILED');
