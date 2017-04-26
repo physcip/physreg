@@ -8,6 +8,8 @@
 #
 # This script is only supposed to be called by physreg over SSH
 
+LOGFILE=/var/log/physreg-home.log
+
 if [ "$SSH_ORIGINAL_COMMAND" = "" ]; then
 	SSH_ORIGINAL_COMMAND=$*
 fi
@@ -30,8 +32,26 @@ for arg in $SSH_ORIGINAL_COMMAND; do
 done
 
 if [ "$username" = "" ]; then
-	echo "No username specified" | tee -a /var/log/physreg-home.log
+	echo "No username specified" | tee -a $LOGFILE
 	exit
+fi
+
+# UID / GID not specified: Propably running this script manually,
+# determine UID / GID from username
+if [ "$uid" = "" ]; then
+	uid=$(id -u $username)
+	if [ "$?" -ne "0" ]; then
+		echo "Could not find UID for $username. Does this user exist?" | tee -a $LOGFILE
+		exit
+	fi
+fi
+
+if [ "$gid" = "" ]; then
+	gid=$(id -g $username)
+	if [ "$?" -ne "0" ]; then
+		echo "Could not find GID for $username. Does this user exist?" | tee -a $LOGFILE
+		exit
+	fi
 fi
 
 if [ ! -d "/System/Library/User Template/$lang.lproj" ]; then
@@ -63,20 +83,20 @@ if [ ! -d "/System/Library/User Template/$lang.lproj" ]; then
 	esac	
 fi
 
-echo "Creating homedir for $username with $lang" | tee -a /var/log/physreg-home.log
+echo "Creating homedir for $username with $lang" | tee -a $LOGFILE
 
 cd /Volumes/home
-mkdir $username 2>&1 | tee -a /var/log/physreg-home.log
-chown $uid:$gid $username 2>&1 | tee -a /var/log/physreg-home.log
+mkdir $username 2>&1 | tee -a $LOGFILE
+chown $uid:$gid $username 2>&1 | tee -a $LOGFILE
 
 if [ ! -d "$username/Library/Preferences" ]; then
-	echo "Initializing home directory with user template for $lang" | tee -a /var/log/physreg-home.log
-	ditto /System/Library/User\ Template/Non_localized $username 2>&1 | tee -a /var/log/physreg-home.log
-	ditto /System/Library/User\ Template/$lang.lproj $username 2>&1 | tee -a /var/log/physreg-home.log
-	chown -R $uid:$gid $username 2>&1 | tee -a /var/log/physreg-home.log
-	rm -rf /Volumes/home/$username/Downloads/About\ Downloads.lpdf 2>&1 | tee -a /var/log/physreg-home.log
+	echo "Initializing home directory with user template for $lang" | tee -a $LOGFILE
+	ditto /System/Library/User\ Template/Non_localized $username 2>&1 | tee -a $LOGFILE
+	ditto /System/Library/User\ Template/$lang.lproj $username 2>&1 | tee -a $LOGFILE
+	chown -R $uid:$gid $username 2>&1 | tee -a $LOGFILE
+	rm -rf /Volumes/home/$username/Downloads/About\ Downloads.lpdf 2>&1 | tee -a $LOGFILE
 else
-	echo "Homedir already initialized" | tee -a /var/log/physreg-home.log
+	echo "Homedir already initialized" | tee -a $LOGFILE
 fi
 
 exit 0
