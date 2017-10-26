@@ -3,6 +3,7 @@
 # TODO: Remove EXTERNAL_SCRIPT_TIMEOUT error
 
 header('Content-type: application/json');
+header('Access-Control-Allow-Origin: *');
 
 require_once 'physcip_users.inc.php';
 require_once 'ipcheck.inc.php';
