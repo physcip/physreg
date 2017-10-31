@@ -6,7 +6,7 @@ require_once 'config_secret.inc.php';
 
 # TIK LDAP Credentials
 # This is the server users authenticate to with their TIK account and the server that contains the list of allowed student groups
-$TIK_LDAPSERVER="ldaps://studsv10.stud.uni-stuttgart.de ldaps://studsv11.stud.uni-stuttgart.de ldaps://studsv12.stud.uni-stuttgart.de";
+$TIK_LDAPSERVER="ldaps://studsv10.stud.uni-stuttgart.de ldaps://studsv11.stud.uni-stuttgart.de ldaps://studsv15.stud.uni-stuttgart.de";
 $TIK_LDAPSEARCHBASE="dc=stud,dc=uni-stuttgart,dc=de";
 $TIK_LDAPSPECIALUSER="cn=ldapqueryPhys,ou=ServiceAccounts,ou=IuK-IS,dc=stud,dc=uni-stuttgart,dc=de";
 
