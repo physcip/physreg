@@ -57,7 +57,7 @@ function physcip_createuser($username, $uidnumber, $password, $firstname, $lastn
 	global $PHYSCIP_PHYREGGER_DN, $PHYSCIP_PHYREGGER_PW, $PHYSCIP_SERVER, $PHYSCIP_USER_CONTAINER;
 	global $PHYSCIP_UPN_REALM, $PHYSCIP_HOME_SSH, $PHYSCIP_HOME_SSH_ID, $PHYSCIP_HOME_COMMAND;
 
-	# Sanitize inputs: Make sure $username and $lang only contain alphanumeric characters.
+	# Sanitize inputs: Make sure $username and $lang contain only alphanumeric characters.
 	# This is CRUCIAL for ensuring users can't inject code into the command that creates the home directories via SSH.
 	if (!ctype_alnum($username) || !ctype_alnum($lang))
 		physreg_err('PHYSCIP_INVALID_INPUT');
@@ -135,6 +135,42 @@ function physcip_createuser($username, $uidnumber, $password, $firstname, $lastn
 	exec($sshcommand, $output, $exitcode);
 	if ($exitcode != 0)
 		physreg_err('PHYSCIP_CREATEHOME_FAILED');
+
+	ldap_close($conn);
+}
+
+# Connect to Active Directory (Samba 4) via LDAP and force-set $password for $username
+function physcip_setpassword($username, $password)
+{
+	global $PHYSCIP_PHYREGGER_DN, $PHYSCIP_PHYREGGER_PW, $PHYSCIP_SERVER, $PHYSCIP_USER_CONTAINER;
+
+	# Sanitize inputs: Make sure $username contains only alphanumeric characters.
+	if (!ctype_alnum($username))
+		physreg_err('PHYSCIP_INVALID_INPUT');
+
+	# Step 1: Connect to Samba4 AD DC Server
+	$conn = ldap_connect($PHYSCIP_SERVER);
+	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($conn, LDAP_OPT_REFERRALS, FALSE);
+	if (!@ldap_bind($conn, $PHYSCIP_PHYREGGER_DN, $PHYSCIP_PHYREGGER_PW))
+		physreg_err('PHYSCIP_BIND_FAILED');
+
+	# Step 2: Find user by username
+	$res = ldap_search($conn, $PHYSCIP_USER_CONTAINER, '(sAMAccountName=' . $username . ')');
+	if (!$res)
+		physreg_err('PHYSCIP_SEARCH_FAILED');
+
+	# Step 3: Get DN from user entry
+	$user_entry = ldap_first_entry($conn, $res);
+	$user_dn = ldap_get_dn($conn, $user_entry);
+
+	# Step 4: Encode password and modify
+	$modentry = [
+		'unicodePwd' => encode_password($password)
+	];
+
+	if (ldap_modify($conn, $user_dn, $modentry) === false)
+		physreg_err('PHYSCIP_PW_CHANGE_FAILED');
 
 	ldap_close($conn);
 }

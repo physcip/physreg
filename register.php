@@ -3,6 +3,7 @@
 # TODO: Remove EXTERNAL_SCRIPT_TIMEOUT error
 
 header('Content-type: application/json');
+header('Access-Control-Allow-Origin: *');
 
 require_once 'physcip_users.inc.php';
 require_once 'ipcheck.inc.php';
@@ -33,7 +34,8 @@ function get_rus_dn($rususer)
 	return $info[0]['dn'];
 }
 
-function checkuser($rususer, $ruspw)
+# Helper function: Fails with RUS_PW_INVALID in case TIK password is wrong
+function check_rus_pw($rususer, $ruspw)
 {
 	global $TIK_LDAPSERVER, $TIK_LDAPSEARCHBASE, $TIK_LDAPSPECIALUSER, $TIK_LDAPSPECIALUSERPW, $ALLOWEDUSERS, $ALLOWEDGROUPS;
 
@@ -49,7 +51,18 @@ function checkuser($rususer, $ruspw)
 	ldap_set_option($conn, LDAP_OPT_REFERRALS, false);
 	$bind = @ldap_bind($conn, $userdn, $ruspw) or physreg_err('RUS_PW_INVALID');
 	ldap_close($conn);
+}
 
+function checkuser($rususer, $ruspw)
+{
+	check_rus_pw($rususer, $ruspw);
+	return array('error' => false);
+}
+
+function reset_password($rususer, $ruspw, $physcippw)
+{
+	check_rus_pw($rususer, $ruspw);
+	physcip_setpassword($rususer, $physcippw);
 	return array('error' => false);
 }
 
@@ -133,6 +146,10 @@ switch ($_GET['action'])
 	
 	case 'ipcheck':
 		$data = array('error' => false);
+	break;
+
+	case 'set_password':
+		$data = reset_password($_POST['rususer'], $_POST['ruspw'], $_POST['password']);
 	break;
 }
 
