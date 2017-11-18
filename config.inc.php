@@ -15,8 +15,8 @@ $PHYSCIP_SERVER = "ldaps://dc01.physcip.uni-stuttgart.de ldaps://dc02.physcip.un
 $PHYSCIP_PHYREGGER_DN = "phyregger@physcip.uni-stuttgart.de";						# DN or userPrincipalName for phyregger Account
 
 # Home directory creation via SSH
-# Physreg creates home directory by logging in to the home directory server via SSH and executing
-# the given command with parameters $username and $language.
+# Physreg creates home directories by logging in to the home directory server via SSH and executing
+# the given command with parameters username, language, UID number and GID number (for user's primary group).
 $PHYSCIP_HOME_SSH = "root@home.physcip.uni-stuttgart.de";						# Username / server to log in to via SSH for creating home directories
 $PHYSCIP_HOME_COMMAND = "/usr/local/bin/inithomedir.sh";						# Command that will be executed on homedir server
 $PHYSCIP_HOME_SSH_ID = "/etc/phyreg-id_rsa";								# Key to use for authentication, can be restricted to PHYSCIP_HOME_COMMAND
@@ -47,6 +47,6 @@ if (file_exists($ALLOWFILE))
 else
 	trigger_error("$ALLOWFILE missing.", E_USER_WARNING);
 
-$allowed_v4 = array('129.69.0.0/16', '141.58.0.0/16', '192.108.35.0/24', '192.108.36.0/22', '192.108.40.0/22', '192.108.44.0/24', '::');
-$allowed_v6 = array('fe80::/64', '2001:7C0:7C0::/48', '2001:7C0:2000::/40', '2001:638:202::/48', 'FC5C:983E:D7E3::/48', '127.0.0.1');
+$allowed_v4 = array('129.69.0.0/16', '141.58.0.0/16', '192.108.35.0/24', '192.108.36.0/22', '192.108.40.0/22', '192.108.44.0/24', '127.0.0.1/8');
+$allowed_v6 = array('fe80::/64', '2001:7C0:7C0::/48', '2001:7C0:2000::/40', '2001:638:202::/48', 'FC5C:983E:D7E3::/48');
 ?>
