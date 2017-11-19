@@ -3,8 +3,6 @@
 require_once 'config.inc.php';
 require_once 'util.inc.php';
 
-# TODO: Add PHYSCIP_BIND_FAILED, PHYSCIP_ADD_FAILED, PHYSCIP_PRIMARY_FAILED, PHYSCIP_SEARCH_FAILED, PHYSCIP_INVALID_INPUT, PHYSCIP_CREATEHOME_FAILED errors to web client
-
 # AD wants the password in a unicode format
 # This seems to be the commonly accepted hack to encode the password
 function encode_password($password)

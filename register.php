@@ -1,7 +1,5 @@
 <?php
 
-# TODO: Remove EXTERNAL_SCRIPT_TIMEOUT error
-
 header('Content-type: application/json');
 header('Access-Control-Allow-Origin: *');
 
