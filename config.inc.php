@@ -35,6 +35,7 @@ $PHYSCIP_GIDNUMBER = 10000;										# gidNumber of primary group
 $ALLOWEDGROUPS=array(
 	"CN=Stg1590-08-128,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
 	"CN=Stg1590-08-918,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
+	"CN=Stg1590-08-686,OU=OrgGroups,OU=IDMGroups,OU=SIAM,DC=stud,DC=uni-stuttgart,DC=de",
 );
 
 # $ALLOWEDUSERS: List of users that have a special permission to create new accounts
