@@ -93,8 +93,8 @@ chown $uid:$gid $username 2>&1 | tee -a $LOGFILE
 
 if [ ! -d "$username/Library/Preferences" ]; then
 	echo "Initializing home directory with user template for $lang" | tee -a $LOGFILE
-	ditto $USER_TEMPLATE_DIR/Non_localized $username 2>&1 | tee -a $LOGFILE
-	ditto $USER_TEMPLATE_DIR/$lang.lproj $username 2>&1 | tee -a $LOGFILE
+	rsync -a $USER_TEMPLATE_DIR/Non_localized $username 2>&1 | tee -a $LOGFILE
+	rsync -a $USER_TEMPLATE_DIR/$lang.lproj $username 2>&1 | tee -a $LOGFILE
 	chown -R $uid:$gid $username 2>&1 | tee -a $LOGFILE
 	rm -rf $USER_HOME_DIR/$username/Downloads/About\ Downloads.lpdf 2>&1 | tee -a $LOGFILE
 else
