@@ -9,6 +9,8 @@
 # This script is only supposed to be called by physreg over SSH
 
 LOGFILE=/var/log/physreg-home.log
+USER_TEMPLATE_DIR=/System/Library/User\ Template
+USER_HOME_DIR=/Volumes/home
 
 if [ "$SSH_ORIGINAL_COMMAND" = "" ]; then
 	SSH_ORIGINAL_COMMAND=$*
@@ -54,7 +56,7 @@ if [ "$gid" = "" ]; then
 	fi
 fi
 
-if [ ! -d "/System/Library/User Template/$lang.lproj" ]; then
+if [ ! -d "$USER_TEMPLATE_DIR/$lang.lproj" ]; then
 	case "$lang" in
 		"nl")
 			lang=Dutch
@@ -85,16 +87,16 @@ fi
 
 echo "Creating homedir for $username with $lang" | tee -a $LOGFILE
 
-cd /Volumes/home
+cd $USER_HOME_DIR
 mkdir $username 2>&1 | tee -a $LOGFILE
 chown $uid:$gid $username 2>&1 | tee -a $LOGFILE
 
 if [ ! -d "$username/Library/Preferences" ]; then
 	echo "Initializing home directory with user template for $lang" | tee -a $LOGFILE
-	ditto /System/Library/User\ Template/Non_localized $username 2>&1 | tee -a $LOGFILE
-	ditto /System/Library/User\ Template/$lang.lproj $username 2>&1 | tee -a $LOGFILE
+	ditto $USER_TEMPLATE_DIR/Non_localized $username 2>&1 | tee -a $LOGFILE
+	ditto $USER_TEMPLATE_DIR/$lang.lproj $username 2>&1 | tee -a $LOGFILE
 	chown -R $uid:$gid $username 2>&1 | tee -a $LOGFILE
-	rm -rf /Volumes/home/$username/Downloads/About\ Downloads.lpdf 2>&1 | tee -a $LOGFILE
+	rm -rf $USER_HOME_DIR/$username/Downloads/About\ Downloads.lpdf 2>&1 | tee -a $LOGFILE
 else
 	echo "Homedir already initialized" | tee -a $LOGFILE
 fi
